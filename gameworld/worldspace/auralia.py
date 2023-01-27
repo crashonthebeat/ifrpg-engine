@@ -18,12 +18,8 @@ ardanion_desc = [
 ]
 
 ardanion_south.desc = ardanion_desc
-ardanion_central.desc = ardanion_desc.extend([
-    "The great city of Eviscore dominates the landscape, its silver-glass tower rising up from the trees. In it lies",
-    "one of the only three ways of crossing the Celtain River in the region, the other two being the bridge along",
-    "the Auraclian Way in the east region, and the far-less travelled Toraval bridge."
-])
 ardanion_east.desc = ardanion_desc
+ardanion_central.desc = ardanion_desc
 
 ardanion_south.quick_desc = []
 ardanion_central.quick_desc = []
@@ -32,6 +28,10 @@ ardanion_east.quick_desc = []
 ardanion_south.exits = {
     'north': ardanion_central,
     'northeast': ardanion_east,
+}
+
+ardanion_south.submaps = {
+    'riverside cabin': forest_path_3,
 }
 
 ardanion_central.exits = {
