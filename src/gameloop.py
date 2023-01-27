@@ -1,6 +1,7 @@
 import src.inparse as cmd
 
 from gameworld import *  # This will change to import the world state.
+from entities.boxscope import localscope
 
 # List of action verbs for each category of action
 # These are explained below in the validate_action method.
@@ -29,6 +30,8 @@ def validate_action(action, obj, ind_obj, prep):
     elif action in describe_actions: pc.look(obj, ind_obj)
     # Quick Describe Action (Glancing):
     elif action in glance_actions: pc.glance(obj, ind_obj)
+    # Take Action:
+    elif action in take_actions: pc.get_item(obj, ind_obj)
     # Exit to Menu: 
     elif action == "quit": return False
     # Default: 
@@ -37,7 +40,8 @@ def validate_action(action, obj, ind_obj, prep):
     return True
 
 def command_loop(game=True):
-    pc.current_room.enter()  
+    pc.current_room.enter()
+    localscope.update_scope(pc)  
     # On game start, have player re-enter room to re-establish scenery.
     while game:  # Core Game loop, ask for input > get input
         print("What would you like to do?")

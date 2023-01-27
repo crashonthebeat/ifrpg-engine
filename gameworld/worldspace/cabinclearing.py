@@ -175,4 +175,9 @@ forest_path_2.exits = {
 forest_path_3.exits = {
     "south": forest_path_2
 }
+
 forest_path_3.exit = ardanion_south
+
+ardanion_south.submaps = {
+    'riverside cabin': forest_path_3,
+}

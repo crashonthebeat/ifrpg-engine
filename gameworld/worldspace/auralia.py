@@ -1,5 +1,4 @@
 from entities.rooms import MapRoom
-from gameworld.worldspace.cabinclearing import *
 
 
 ### ARDANION ###
@@ -28,10 +27,6 @@ ardanion_east.quick_desc = []
 ardanion_south.exits = {
     'north': ardanion_central,
     'northeast': ardanion_east,
-}
-
-ardanion_south.submaps = {
-    'riverside cabin': forest_path_3,
 }
 
 ardanion_central.exits = {

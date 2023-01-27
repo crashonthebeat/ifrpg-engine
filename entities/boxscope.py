@@ -3,7 +3,7 @@
 # either the method's scope or the user selected scope.
 
 from entities.basic import Entity
-from gameworld import pc
+from gameworld import *
 
 class BoxScope(Entity):
     # This is the class for all global inventory objects. Each scope will
@@ -38,7 +38,7 @@ class BoxScope(Entity):
                     # Tell the find item function that multiples were found.
                     found_item = 'multiple'  # Change found item status
                     return found_item, found_box  # Stop the function.
-        
+
         return found_item, found_box
 
 
@@ -48,10 +48,10 @@ class SelfScope(BoxScope):
     def __init__(self, name):
         BoxScope.__init__(self, name)
     
-    def update_scope(self):
+    def update_scope(self, player):
         # When called, this method will find any container on the body, 
         # ensure that it is opened and remake the list.
-        for item in pc.worn_items:
+        for item in player.worn_items:
             if item.isbox: self.boxes.append(item)
 
 selfscope = SelfScope('selfscope')
@@ -63,11 +63,15 @@ class SceneScope(BoxScope):
     def __init__(self, name):
         BoxScope.__init__(self, name)
     
-    def update_scope(self):
+    def update_scope(self, player):
         # When called, this method will check the room's inventory for
         # items that are containers, and add them to the scope along with
         # the current room's inventory.
-        for item in pc.current_room.inventory.keys():
+
+        # Does not add self to box inventory
+
+        self.boxes = [self]
+        for item in player.current_room.inventory.keys():
             if item.isbox: self.boxes.append(item)
 
 scenescope = SceneScope('scenescope')  # All non-player inventories in a room.
@@ -78,12 +82,15 @@ class LocalScope(BoxScope):
     # including the player inventory and equipped items. 
     def __init__(self, name):
         BoxScope.__init__(self, name)
+
+    #def search_scope(self, search_item):
+        #return super(LocalScope, self).search_scope(search_item)
     
-    def update_scope(self):
+    def update_scope(self, player):
         # When this method is called, it will update the scope to add both
         # scene and self scope.
-        scenescope.update_scope()
-        selfscope.update_scope()
+        scenescope.update_scope(player)
+        selfscope.update_scope(player)
         self.boxes = selfscope.boxes.extend(scenescope.boxes)
 
 localscope = LocalScope('localscope')

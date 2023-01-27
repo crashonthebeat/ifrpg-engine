@@ -1,4 +1,5 @@
 from entities.basic import Roomspace
+from entities.boxes import Box
 from src.text import *
 
 class MapRoom(Roomspace):
@@ -18,7 +19,7 @@ class MapRoom(Roomspace):
             # Then list all same-space exits.
             print(f"{ex(dir.upper())}: {proper(exit.name)}")
 
-class Room(Roomspace):
+class Room(Roomspace, Box):
     # This is a classic scene, with all features.
     def __init__(self, name):
         Roomspace.__init__(self, name)

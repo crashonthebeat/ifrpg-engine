@@ -1,4 +1,5 @@
 from entities.basic import Entity
+from entities.boxscope import localscope, scenescope, selfscope
 from src.text import proper, intr
 
 class Player(Entity):
@@ -101,3 +102,49 @@ class Player(Entity):
             self.quick_describe()
         else:
             print(f"You don't see {obj} here.")
+
+    ####################
+    ### ITEM METHODS ###
+    ####################
+
+    def find_box(self, search_box):
+        # This method searches localscope for the user defined box and 
+        # checks if the item can in fact be a box or not.
+        box, scope = localscope.search_scope(search_box)
+
+    def find_item(self, search_item, scope):
+        item, box = scope.search_scope(search_item)
+
+        if not item:
+            print(f"You don't see {search_item} here.")
+            return False
+        elif item == 'multiple':
+            print(f"Which {search_item} do you mean?")
+            return False
+        elif box and not box.open:
+            print(f"You don't see {search_item} here.")
+            return False
+        elif box and box.open:
+            print(f"You get {item.name} from {box.name}.")
+            return item
+        else:
+            print(f"You pick up {item.name}.")
+            return item
+        
+
+    def get_item(self, search_item, search_box):
+        # In this case, the ind_obj will be the box, and the obj itself
+        # is the item they want to get.
+
+        if search_box:
+            # If the player specifies a box, search localscope for the
+            # box, and then search the box for the item.
+            # Box will need to be checked if it's open or not. 
+            pass  # TODO Implement after get_item finished.
+        else:
+            # Otherwise, search localscope for the item and return the
+            # item and box. 
+            item = self.find_item(search_item, localscope)
+            if not item: return True
+
+        
