@@ -3,15 +3,15 @@
 # either the method's scope or the user selected scope.
 
 from entities.basic import Entity
+from gameworld import pc
 
 class BoxScope(Entity):
     # This is the class for all global inventory objects. Each scope will
     # include closed inventories, as the specific caller methods should be
     # the ones to determine whether or not an item can be called. 
-    def __init__(self, name='scope'):
+    def __init__(self, name):
         Entity.__init__(self, name)
         self.boxes = []  # All boxes in inventory
-        self.ttlinventory = {}  # All Items in All Inventories
 
     def update_scope(self):
         # This is a method called when an inventory is moved from or to
@@ -48,12 +48,13 @@ class SelfScope(BoxScope):
     def __init__(self, name):
         BoxScope.__init__(self, name)
     
-    def update_scope(self, player):
+    def update_scope(self):
         # When called, this method will find any container on the body, 
         # ensure that it is opened and remake the list.
-        pass
+        for item in pc.worn_items:
+            if item.isbox: self.boxes.append(item)
 
-selfscope = SelfScope()
+selfscope = SelfScope('selfscope')
 
 
 class SceneScope(BoxScope):
@@ -62,13 +63,14 @@ class SceneScope(BoxScope):
     def __init__(self, name):
         BoxScope.__init__(self, name)
     
-    def update_scope(self, player):
+    def update_scope(self):
         # When called, this method will check the room's inventory for
         # items that are containers, and add them to the scope along with
         # the current room's inventory.
-        pass
+        for item in pc.current_room.inventory.keys():
+            if item.isbox: self.boxes.append(item)
 
-scenescope = SceneScope()  # All non-player inventories in a room.
+scenescope = SceneScope('scenescope')  # All non-player inventories in a room.
 
 
 class LocalScope(BoxScope):
@@ -80,8 +82,10 @@ class LocalScope(BoxScope):
     def update_scope(self):
         # When this method is called, it will update the scope to add both
         # scene and self scope.
-        pass
+        scenescope.update_scope()
+        selfscope.update_scope()
+        self.boxes = selfscope.boxes.extend(scenescope.boxes)
 
-localscope = LocalScope()
+localscope = LocalScope('localscope')
 
 

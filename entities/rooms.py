@@ -25,6 +25,7 @@ class Room(Roomspace):
         self.closed_dirs = {}
         # A key of the direction and either what the room beyond should be,
         # or the a door, if the direction can be closed.
+        self.inventory = {}
 
 
     def open(self, dire):

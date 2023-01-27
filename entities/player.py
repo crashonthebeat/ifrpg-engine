@@ -7,6 +7,13 @@ class Player(Entity):
         self.name = name
         self.entity_type = 'player'
         self.current_room = current_room
+        self.worn_items = []  # A list of items
+        self.held_items = []  
+        # This game engine doesn't have a classic inventory where anything
+        # you pick up goes into a pile above your head. You will have a 
+        # limited space to put things based on weight and size. So, if
+        # you pick something up it'll go into your hands if you have a
+        # free hand.
 
     def travel(self, action, direction):
         # This method is for travelling within the same mapspace.
