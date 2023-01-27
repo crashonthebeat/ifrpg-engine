@@ -89,4 +89,6 @@ class Roomspace(Entity):
         self.list_exits()  # Finally, list all room exits.
 
 class Item(Entity):
-    pass
+    def __init__(self, name):
+        Entity.__init__(self, name)
+        self.fixed = False  # Whether the object can move between inventories
