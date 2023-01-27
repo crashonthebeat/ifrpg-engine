@@ -44,7 +44,7 @@ class Room(Roomspace):
             return True
         else:
             # Otherwise, there's a door in the way and it's locked.
-            print(f"You need to {intr('unlock')} {self.exits[dir].name} first.")
+            print(f"You need to {intr('unlock')} {self.exits[dire].name} first.")
 
     def close(self, dire):
         # This method closes a direction if it can be.
