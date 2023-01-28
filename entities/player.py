@@ -16,29 +16,6 @@ class Player(Entity):
         # you pick something up it'll go into your hands if you have a
         # free hand.
 
-    def travel(self, action, direction):
-        # This method is for travelling within the same mapspace.
-
-        # First check if the direction is even valid.
-        if direction in self.current_room.exits.keys(): pass
-        else:
-            # If it's not a valid exit, go back to game loop.
-            print(f"You cannot go {direction}.")
-            return True
-        
-        # Next check if the way is open or shut, deny if the way is shut.
-        if self.current_room.exits[direction].entity_type == 'door':
-            # If the way is shut, prompt the user to open the door.
-            print(f"You run into {self.current_room.exits[direction].name}.")
-            print(f"You should probably {intr('open')} that first.")
-        else:
-            # Insert Method to Clear the Screen
-            # The below methods transfer a player from roomspace to another.
-            print(f"You {action} {direction}.")
-            new_room = self.current_room.exits[direction]
-            new_room.enter()
-            self.current_room = new_room
-
     #######################
     ### UTILITY METHODS ###
     #######################
@@ -73,8 +50,31 @@ class Player(Entity):
     ######################
     ### TRAVEL METHODS ###
     ######################
+
+    def travel(self, action, direction):
+        # This method is for travelling within the same mapspace.
+
+        # First check if the direction is even valid.
+        if direction in self.current_room.exits.keys(): pass
+        else:
+            # If it's not a valid exit, go back to game loop.
+            print(f"You cannot go {direction}.")
+            return True
+        
+        # Next check if the way is open or shut, deny if the way is shut.
+        if self.current_room.exits[direction].entity_type == 'door':
+            # If the way is shut, prompt the user to open the door.
+            print(f"You run into {self.current_room.exits[direction].name}.")
+            print(f"You should probably {intr('open')} that first.")
+        else:
+            # Insert Method to Clear the Screen
+            # The below methods transfer a player from roomspace to another.
+            print(f"You {action} {direction}.")
+            new_room = self.current_room.exits[direction]
+            new_room.enter()
+            self.current_room = new_room
     
-    def enter(self, place):
+    def enter_submap(self, place):
         # This will take the place the user wants to enter
         # and pass it to the current room to check if it's
         # a valid submap entry point.

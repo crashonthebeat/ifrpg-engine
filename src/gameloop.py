@@ -19,7 +19,7 @@ def validate_action(action, obj, ind_obj, prep):
     # Travel Action (Moving between roomspaces): 
     if action in travel_actions: pc.travel(action, obj)
     # Enter Action (Moving to Submap):
-    elif action  == 'enter': pc.enter(obj)
+    elif action  == 'enter': pc.enter_submap(obj)
     # Exit Action (Moving out of Submap):
     elif action == 'exit': pc.exit()
     # Open/close Door:
