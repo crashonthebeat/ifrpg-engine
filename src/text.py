@@ -2,6 +2,8 @@
 # correctly on a screen, and to break up the monotony of white text black
 # background.
 
+import textwrap
+
 from termcolor import colored
 
 def ex(exit):
@@ -39,6 +41,22 @@ def proper(full_name):
             split_name.append(word.capitalize())
 
     return ' '.join(split_name)
+
+def numstr(number):
+    # This method will take a number and return a string. If the number is
+    # less than eleven, it will return the word of the number.
+    numwords = {
+        1: "one", 2: "two", 3: "three", 4: "four", 5: "five",
+        6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten"}
+    if number in numwords.keys():
+        return numwords[number]
+    else: return str(number)
+
+wrapper = textwrap.TextWrapper(width=118)
+
+def wraptxt(txt):
+    # This method takes textwrapper and wraps a long string.
+    return wrapper.wrap(text=txt)
 
 def swap_items(item1, item2):
     # This method takes two items and swaps their position. It can do this
