@@ -92,3 +92,4 @@ class Item(Entity):
     def __init__(self, name):
         Entity.__init__(self, name)
         self.fixed = False  # Whether the object can move between inventories
+        self.isbox = False

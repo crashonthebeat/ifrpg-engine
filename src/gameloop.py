@@ -41,7 +41,7 @@ def validate_action(action, obj, ind_obj, prep):
 
 def command_loop(game=True):
     pc.current_room.enter()
-    localscope.update_scope(pc)  
+    localscope.update_scope(pc)
     # On game start, have player re-enter room to re-establish scenery.
     while game:  # Core Game loop, ask for input > get input
         print("What would you like to do?")

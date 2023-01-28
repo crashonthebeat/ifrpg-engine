@@ -22,5 +22,6 @@ class KeyItem(Item):
 class TradeItem(Item):
     # TradeItems are a nice word for trash items, some can be sold, but some
     # are truly useless.
-    pass
+    def __init__(self, name):
+        Item.__init__(self, name)
 

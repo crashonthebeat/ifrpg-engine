@@ -29,11 +29,12 @@ class BoxScope(Entity):
 
         for box in self.boxes:  # Loop over all boxes
             for item in box.inventory.keys():  # Loop over all items in a box
-                if search_item in item.name:  # If search term matches
+                if search_item in item.name and found == 0:  
+                    # If search term matches and item hasn't been found
                     found += 1  # Increment counter
                     found_item = item  # Return the item object
                     found_box = box  # Return the box object
-                elif search_item in item.name and found > 0:
+                elif search_item in item.name:
                     # If the search term was too vague to match an item,
                     # Tell the find item function that multiples were found.
                     found_item = 'multiple'  # Change found item status
@@ -46,13 +47,14 @@ class SelfScope(BoxScope):
     # This is the class for all inventories on a player, including equip.
     # Non-equipped boxes will not be part of this or any scope.
     def __init__(self, name):
-        BoxScope.__init__(self, name)
+        BoxScope.__init__(self, name) 
     
     def update_scope(self, player):
         # When called, this method will find any container on the body, 
         # ensure that it is opened and remake the list.
         for item in player.worn_items:
             if item.isbox: self.boxes.append(item)
+        
 
 selfscope = SelfScope('selfscope')
 
@@ -62,6 +64,7 @@ class SceneScope(BoxScope):
     # players inventory or equipped items. 
     def __init__(self, name):
         BoxScope.__init__(self, name)
+        self.boxes = []
     
     def update_scope(self, player):
         # When called, this method will check the room's inventory for
@@ -70,7 +73,7 @@ class SceneScope(BoxScope):
 
         # Does not add self to box inventory
 
-        self.boxes = [self]
+        self.boxes = [player.current_room]
         for item in player.current_room.inventory.keys():
             if item.isbox: self.boxes.append(item)
 
@@ -91,7 +94,9 @@ class LocalScope(BoxScope):
         # scene and self scope.
         scenescope.update_scope(player)
         selfscope.update_scope(player)
-        self.boxes = selfscope.boxes.extend(scenescope.boxes)
+
+        self.boxes = scenescope.boxes
+        self.boxes.extend(selfscope.boxes)
 
 localscope = LocalScope('localscope')
 

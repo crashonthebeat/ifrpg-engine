@@ -1,2 +1,4 @@
-oak_stick = ("an oak stick")
-maple_stick = ("a maple stick")
+from entities.items import TradeItem
+
+oak_stick = TradeItem("an oak stick")
+maple_stick = TradeItem("a maple stick")

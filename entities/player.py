@@ -9,7 +9,7 @@ class Player(Entity):
         self.entity_type = 'player'
         self.current_room = current_room
         self.worn_items = []  # A list of items
-        self.held_items = []  
+        self.held_items = {}  # A dict of items - "inventory"
         # This game engine doesn't have a classic inventory where anything
         # you pick up goes into a pile above your head. You will have a 
         # limited space to put things based on weight and size. So, if
@@ -107,6 +107,12 @@ class Player(Entity):
     ### ITEM METHODS ###
     ####################
 
+    def add_item(self, item):
+        if item in self.held_items.keys():
+            self.held_items[item] += 1
+        else:
+            self.held_items[item] = 1
+
     def find_box(self, search_box):
         # This method searches localscope for the user defined box and 
         # checks if the item can in fact be a box or not.
@@ -117,19 +123,22 @@ class Player(Entity):
 
         if not item:
             print(f"You don't see {search_item} here.")
-            return False
+            return False, False
         elif item == 'multiple':
             print(f"Which {search_item} do you mean?")
-            return False
+            return False, False
+        elif box.name == self.current_room.name:
+            print(f"You pick up {item.name}.")
+            return item, box
         elif box and not box.open:
             print(f"You don't see {search_item} here.")
-            return False
+            return False, False
         elif box and box.open:
             print(f"You get {item.name} from {box.name}.")
-            return item
+            return item, box
         else:
             print(f"You pick up {item.name}.")
-            return item
+            return item, box
         
 
     def get_item(self, search_item, search_box):
@@ -139,12 +148,14 @@ class Player(Entity):
         if search_box:
             # If the player specifies a box, search localscope for the
             # box, and then search the box for the item.
-            # Box will need to be checked if it's open or not. 
+            # Box will need to be checked if it's open or not.
             pass  # TODO Implement after get_item finished.
         else:
             # Otherwise, search localscope for the item and return the
             # item and box. 
-            item = self.find_item(search_item, localscope)
+            item, box = self.find_item(search_item, localscope)
             if not item: return True
-
-        
+            else:
+                box.remove_item(item)
+                self.add_item(item)
+                if item.isbox: localscope.update_scope(self)
