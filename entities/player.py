@@ -39,6 +39,41 @@ class Player(Entity):
             new_room.enter()
             self.current_room = new_room
 
+    #######################
+    ### UTILITY METHODS ###
+    #######################
+
+    def find_box(self, search_box):
+        # This method searches localscope for the user defined box and 
+        # checks if the item can in fact be a box or not.
+        box, scope = localscope.search_scope(search_box)
+
+    def find_item(self, search_item, scope):
+        item, box = scope.search_scope(search_item)
+
+        if not item:
+            print(f"You don't see {search_item} here.")
+            return False, False
+        elif item == 'multiple':
+            print(f"Which {search_item} do you mean?")
+            return False, False
+        elif box.name == self.current_room.name:
+            print(f"You pick up {item.name}.")
+            return item, box
+        elif box and not box.open:
+            print(f"You don't see {search_item} here.")
+            return False, False
+        elif box and box.open:
+            print(f"You get {item.name} from {box.name}.")
+            return item, box
+        else:
+            print(f"You pick up {item.name}.")
+            return item, box
+
+    ######################
+    ### TRAVEL METHODS ###
+    ######################
+    
     def enter(self, place):
         # This will take the place the user wants to enter
         # and pass it to the current room to check if it's
@@ -112,33 +147,6 @@ class Player(Entity):
             self.held_items[item] += 1
         else:
             self.held_items[item] = 1
-
-    def find_box(self, search_box):
-        # This method searches localscope for the user defined box and 
-        # checks if the item can in fact be a box or not.
-        box, scope = localscope.search_scope(search_box)
-
-    def find_item(self, search_item, scope):
-        item, box = scope.search_scope(search_item)
-
-        if not item:
-            print(f"You don't see {search_item} here.")
-            return False, False
-        elif item == 'multiple':
-            print(f"Which {search_item} do you mean?")
-            return False, False
-        elif box.name == self.current_room.name:
-            print(f"You pick up {item.name}.")
-            return item, box
-        elif box and not box.open:
-            print(f"You don't see {search_item} here.")
-            return False, False
-        elif box and box.open:
-            print(f"You get {item.name} from {box.name}.")
-            return item, box
-        else:
-            print(f"You pick up {item.name}.")
-            return item, box
         
 
     def get_item(self, search_item, search_box):
