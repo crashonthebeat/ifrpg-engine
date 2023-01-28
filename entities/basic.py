@@ -12,7 +12,7 @@ class Entity:
         # A full description for looking directly at something.
         self.quick_desc = [
             f"You see nothing special about {self.name}.",
-            "This description has yet to be written."]
+            "This quick description has yet to be written."]
         # A quick description for glancing. 
         self.entity_type = False
         # Entity type is a string that tells the game what the primary type

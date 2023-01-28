@@ -119,13 +119,13 @@ class Player(Entity):
         if ind_obj: obj = ind_obj
 
         if (not obj or obj == 'room'):
-            self.current_room.describe()
             # If no object is given, assume user wants to look at room.
+            self.current_room.describe()
         elif obj in ['self', 'me', 'player', 'myself']:
             self.describe()
         else:
-            # TODO add item search when items are added.
-            print(f"You don't see {obj} here.")
+            item, box = self.find_item(obj, localscope)
+            if item: item.describe()
 
     def glance(self, obj, ind_obj):
         # Exact same method as above, but for short descriptions. 
@@ -136,7 +136,8 @@ class Player(Entity):
         elif obj in ['self', 'me', 'player', 'myself']:
             self.quick_describe()
         else:
-            print(f"You don't see {obj} here.")
+            item, box = self.find_item(obj, localscope)
+            if item: item.quick_describe()
 
     ####################
     ### ITEM METHODS ###
