@@ -11,6 +11,7 @@ class Box(Item):
         self.isbox = True
         self.closed = closed
         self.locked = locked
+        self.keys = []
         self.list_desc = f"inside {self.name}"
 
     def describe(self):
@@ -80,7 +81,7 @@ class Box(Item):
                 itemcnt -= 1
             elif qty > 1:
                 # Otherwise, end the list by starting with and.
-                all_items += f"and {numstr(qty)} {item.pl_name}."
+                all_items += f"{numstr(qty)} {item.pl_name}."
             elif qty == 1 and itemcnt > 1:
                 # Same as above 3, but only list the singular item name
                 all_items += f"{item.name}, "
@@ -89,7 +90,7 @@ class Box(Item):
                 all_items += f"{item.name}."
                 itemcnt -= 1
             elif qty == 1:
-                all_items += f"and {item.name}."
+                all_items += f"{item.name}."
 
         itemlist = list()  # A blank list for all items in all boxes in scope
         itemlist.extend(wraptxt(all_items))  # Start itemlist with root items
@@ -115,6 +116,27 @@ class Box(Item):
         else:
             self.closed = True
             print(f"You close {self.name}.")
+
+    def unlock_box(self, actor):
+        if self.locked:
+            found = False
+            for key in self.keys:
+                if key in actor.inventory.keys():  # lol
+                    self.locked = False
+                    found = True
+                    print(f"Unlocked {self.name}.")
+            if found == False: 
+                print(f"You need the key to unlock {self.name} first!")
+                return True
+        elif not self.locked:
+            print(f"{self.name.capitalize()} is already unlocked.")
+        
+        print(f"Would you like to open {self.name}?")
+        choice = input("(y/n)> ")
+        if choice.lower()[0] == 'y': self.open_box()
+        elif choice.lower()[0] == 'n': return True
+        else:
+            print(f"I didn't understand that, {self.name} is still closed.")
 
 
 class Holster(Box):

@@ -77,25 +77,20 @@ class Door(Roomspace):
         self.quick_desc = [
             "You're inside a door.", 
             "Either you cheated or there's a bug."]
-        self.key = False
+        self.keys = []
         self.entity_type = 'door'
         # This will be set in the inventory initialization with the key item.
 
-    def unlock_door(self):
+    def unlock_door(self, actor):
         if self.locked:
-            # Check if player has the key. This will be a search method of
-            # the player's equipped items.
-            key_in_hand = True  # TODO replace with key search.
+            found = False
+            for key in self.keys:
+                if key in actor.inventory.keys():
+                    self.locked = False
+                    print(f"Unlocked {self.name}.")
+                    found = True
+            if found == False: 
+                print(f"You need the key to unlock {self.name} first!")
         else:
             print(f"{self.name.capitalize()} is already unlocked.")
             return False  # Stop method if already unlocked.
-
-        # This part checks if the player has the key. Until items are sorted,
-        # we will always assume the player has the key.
-        if key_in_hand:
-            self.locked = False
-            print(f"Unlocked {self.name}.")
-            return False
-        else:
-            print(f"You need to equip the right key to unlock {self.name}")
-            return True

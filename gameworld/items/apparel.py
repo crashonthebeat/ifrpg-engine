@@ -1,9 +1,9 @@
 from entities.apparel import *
 from entities.bags import *
 
-player_backpack = Backpack("your backpack", "your backpacks")
+player_backpack = Backpack("your backpack")
 
-leather_brig = Tunic("a leather brigandine", "leather brigandines")
+leather_tunic = Tunic("a leather tunic", "leather tunics")
 wool_shirt = Shirt("a woolen shirt", "woolen shirts")
 
 wool_trousers = Trousers(

@@ -28,7 +28,9 @@ class Consumable(Item):
 class KeyItem(Item):
     # KeyItems are important items that can unlock doors (hence the key) or
     # are otherwise important for advancing or changing the gamestate.
-    pass
+    # They are unique.
+    def __init__(self, name):
+        Item.__init__(self, name, pl_name=False)
 
 class TradeItem(Item):
     # TradeItems are a nice word for trash items, some can be sold, but some

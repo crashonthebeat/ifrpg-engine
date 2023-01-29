@@ -14,7 +14,8 @@ class Player(Box):
         self.entity_type = 'player'
         self.current_room = current_room
         self.list_desc = 'in your hands'
-        self.worn_items = []  # A dict of items:slot
+        self.worn_items = []  # A list of items
+        self.held_items = []  # A list of items
         self.inventory = {}  # A dict of items - "inventory"
         # This game engine doesn't have a classic inventory where anything
         # you pick up goes into a pile above your head. You will have a 
@@ -42,8 +43,8 @@ class Player(Box):
             # Closes a Direction
             self.current_room.close(obj)
         elif obj in directions and action == 'unlock':
-            # Locks a Direction
-           self.current_room.exits[obj].unlock_door()
+            # Unocks a Direction
+            self.current_room.exits[obj].unlock_door(self)
         #
         # BOX OPEN/CLOSE
         #
@@ -53,7 +54,9 @@ class Player(Box):
         elif action == 'close':
             box, parent = self.find_item(obj, localscope)
             if box: box.close_box()
-
+        elif action == 'unlock':
+            box, parent = self.find_item(obj, localscope)
+            if box: box.unlock_box(self)
     #######################
     ### UTILITY METHODS ###
     #######################
@@ -166,6 +169,22 @@ class Player(Box):
     ####################
     ### ITEM METHODS ###
     ####################
+
+    def add_item(self, item):
+        # TODO Check if item can be held
+
+        if item in self.inventory.keys():
+            self.inventory[item] += 1
+        else:
+            self.inventory[item] = 1
+            self.held_items.append(item)  # Add to held items
+
+    def remove_item(self, item):
+        if self.inventory[item] == 1:
+            del self.inventory[item]
+            self.held_items.remove(item)  # Remove from Held Items
+        else:
+            self.inventory[item] -= 1
 
     def get_item(self, search_item, search_box):
         # In this case, the ind_obj will be the box, and the obj itself
