@@ -5,8 +5,18 @@ class InteractItem(Item):
     # picked up or moved from the room. 
     pass
 
-class Equipment(Item):
+class Apparel(Item):
     # These are items that can be picked up and worn or otherwise held. 
+    def __init__(self, name, pl_name, primary_slot):
+        Item.__init__(self, name, pl_name)
+        self.primary_slot = primary_slot
+        self.occupied_slots = {}
+        # Occupied slots are a dict of body slots and the layer they
+        # occupy, so that a person can't wear two pieces of armor that
+        # both cover the chest, for example, but they can wear a shirt
+        # and/or tunic with the armor. See apparel.py for a list of slots.
+
+class Tool(Item):
     pass
 
 class Consumable(Item):
@@ -22,6 +32,6 @@ class KeyItem(Item):
 class TradeItem(Item):
     # TradeItems are a nice word for trash items, some can be sold, but some
     # are truly useless.
-    def __init__(self, name):
-        Item.__init__(self, name)
+    def __init__(self, name, pl_name):
+        Item.__init__(self, name, pl_name)
 
