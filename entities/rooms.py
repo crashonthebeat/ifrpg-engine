@@ -23,11 +23,17 @@ class Room(Roomspace, Box):
     # This is a classic scene, with all features.
     def __init__(self, name):
         Roomspace.__init__(self, name)
+        self.list_desc = f"inside {self.name}"
         self.closed_dirs = {}
         # A key of the direction and either what the room beyond should be,
         # or the a door, if the direction can be closed.
         self.inventory = {}
 
+    def describe(self):
+        # This method will differ from other describe methods since it will
+        # include inventory as well as exits.
+        for line in self.desc: print(line)
+        for line in self.list_items(): print(line)
 
     def open(self, dire):
         # This method opens a direction if it is closed.
