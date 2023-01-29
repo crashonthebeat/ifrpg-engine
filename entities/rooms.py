@@ -5,6 +5,9 @@ from src.text import *
 class MapRoom(Roomspace):
     # A MapRoom is an overworld scene. There won't be any items but 
     # locations and directions can still be uncovered. 
+    def __init__(self, name):
+        Roomspace.__init__(self, name)
+        self.entity_type = 'overworld'
 
     def list_exits(self):
         # This method will list all exits of a room and their direction.
@@ -13,7 +16,7 @@ class MapRoom(Roomspace):
         # in one specific map location.
 
         print(f"Locations in {proper(self.name)}:")
-        for submap in self.submaps.keys():  # List all entrances first.
+        for submap in self.submaps.values():  # List all entrances first.
             print(f"{proper(intr(submap.name))}")
         for dir, exit in zip(self.exits.keys(), self.exits.values()):
             # Then list all same-space exits.

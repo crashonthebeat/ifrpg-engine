@@ -72,11 +72,13 @@ class SceneScope(BoxScope):
         # items that are containers, and add them to the scope along with
         # the current room's inventory.
 
-        # Does not add self to box inventory
-
-        self.boxes = [player.current_room]
-        for item in player.current_room.inventory.keys():
-            if item.isbox: self.boxes.append(item)
+        if player.current_room.entity_type == 'overworld':
+            self.boxes = []  # Overworlds do not have inventory.
+        else:
+            self.boxes = [player.current_room]
+            for item in player.current_room.inventory.keys():
+                if item.isbox: 
+                    self.boxes.append(item)
 
 scenescope = SceneScope('scenescope')  # All non-player inventories in a room.
 
@@ -93,10 +95,11 @@ class LocalScope(BoxScope):
     def update_scope(self, player):
         # When this method is called, it will update the scope to add both
         # scene and self scope.
-        scenescope.update_scope(player)
         selfscope.update_scope(player)
+        scenescope.update_scope(player)
+            
 
-        self.boxes = scenescope.boxes
+        self.boxes.extend(scenescope.boxes)
         self.boxes.extend(selfscope.boxes)
 
 localscope = LocalScope('localscope')

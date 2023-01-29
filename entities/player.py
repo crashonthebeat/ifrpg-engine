@@ -197,10 +197,13 @@ class Player(Box):
             box, parent = self.find_item(search_box, localscope)
             if not box: return True
             else: item, box = self.find_item(search_item, box)
+        elif self.current_room.entity_type == 'overworld':
+            print("This is too broad an area to find one item.")
+            return True
         else:
             # Otherwise, search localscope for the item and return the
             # item and box. 
-            item, box = self.find_item(search_item, localscope)
+            item, box = self.find_item(search_item, scenescope)
         if not item: return True
         else:
             box.remove_item(item)
@@ -226,6 +229,16 @@ class Player(Box):
         if found_item and found_item in self.worn_items:
             print("You need to unequip that first.")
         elif found_item:
+            if self.current_room.entity_type == 'overworld':
+                print("You are travelling in the overworld.")
+                print("If you drop an item, it will be lost forever.")
+                print(f"Are you sure you want to drop {item.name}?")
+                choice = input("(y/n)> ")
+                if choice.lower()[0] == 'y': 
+                    self.remove_item(found_item)
+                    print(f"You drop {found_item.name}")
+                    return True
+                else: return True
             self.remove_item(found_item)
             self.current_room.add_item(found_item)
             print(f"You drop {found_item.name}")
