@@ -66,7 +66,12 @@ At this point, I would consider the basic engine ready to go. There would be no 
 
 But I want more.
 
-### Stage ? - Dialogue
+### Stage 6 - Combat and Character Creation
+In equipment, I decided specifically not to add weapons and armor because I don't know how I want combat and health and stats to work. The combat system will be a major undertaking. I'm not sure how i'll do it but it will definitely not be a turn-based system. Part of me wants to do it like runescape, where you have different combat styles you can change on the fly.
+
+I want so much customizability here by the time people are done they've forgotten there's a game waiting for them.
+
+### Stage 7 - Dialogue
 I want a Morrowind-style dialogue system. Haven't played morrowind? Don't know what I mean? Let me explain.
 
 * The game has a list of topics, and people have varying degrees of knowledge on those topics. 
@@ -74,9 +79,3 @@ I want a Morrowind-style dialogue system. Haven't played morrowind? Don't know w
 * Sometimes discovering things in the game or talking to people can unlock new keywords to ask about.
 * Dialogue will be its own sub-loop like combat. 
 * The player will have a journal to review certain topics.
-
-### Stage ? - Combat
-In equipment, I decided specifically not to add weapons and armor because I don't know how I want combat and health and stats to work. The combat system will be a major undertaking. I'm not sure how i'll do it but it will definitely not be a turn-based system. Part of me wants to do it like runescape, where you have different combat styles you can change on the fly.
-
-### Stage ? - Character Creation
-I want so much customizability here by the time people are done they've forgotten there's a game waiting for them.
