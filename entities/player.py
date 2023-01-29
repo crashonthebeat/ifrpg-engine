@@ -32,6 +32,7 @@ class Player(Box):
         for line in self.desc: print(line)
         if len(self.inventory) > 0:
             for line in self.list_items(): print(line)
+        print(self.used_slots)
 
     def open_close(self, obj, action):
         # This and the following method will check if the object is
@@ -312,7 +313,8 @@ class Player(Box):
         # Test if player has free hands to use the tool effectively
         # Item takes up all its effective hand slots to wield
         # 1h = 10 slots, 2h = 20 slots. Otherwise item can be held.
-        if item.hands * 10 > (self.carry_slots - self.used_slots):
+        if  (item.hands * 10 - item.itemsize) > \
+            (self.carry_slots - self.used_slots):
             # If there's too much in player hands to wield item.
             print(
                 f"You cannot effectively wield {item.name}! " +
@@ -327,7 +329,8 @@ class Player(Box):
             else:
                 print(f"You wield {item.name} in your hands.")
             self.wield_items.append(item)  # add item to wielded items.
-            self.used_slots += (item.hands * 10)  # Add hand slots.
+            self.used_slots -= (item.itemsize)  # Add hand slots.
+            self.used_slots += (item.hands * 10)
 
     def equip_item(self, search_item):
         # This method searches for an item, tests what it is,
@@ -343,6 +346,22 @@ class Player(Box):
     def unequip_item(self, search_item):
         item, box = self.find_item(search_item, self)
         if not item: return True
-        elif item in self.worn_items:
+        elif item not in self.worn_items or self.wield_items:
+            print(f"You haven't equipped {item.name}.")
+            return True
+        elif item in self.wield_items:
+            self.wield_items.remove(item)
+            print(f"You drop your stance with {item.name} but still hold it.")
+            self.used_slots -= (item.hands * 10)
+            self.used_slots += (item.itemsize)  # Add hand slots.
+        else: pass
+
+        if item.itemsize > (self.carry_slots - self.used_slots):
+            print(
+                f"You can't remove {item.name}, you need to " + 
+                "put something away first!")
+        else: 
+            print(f"You remove {item.name} and hold it in your hands.")
             self.worn_items.remove(item)
             self.used_slots += item.itemsize
+
