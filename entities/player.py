@@ -44,7 +44,7 @@ class Player(Box):
             self.current_room.close(obj)
         elif obj in directions and action == 'unlock':
             # Unocks a Direction
-            self.current_room.exits[obj].unlock_door(self)
+            self.current_room.exits[obj].unlock_door(self, obj)
         #
         # BOX OPEN/CLOSE
         #
@@ -109,6 +109,7 @@ class Player(Box):
             new_room = self.current_room.exits[direction]
             new_room.enter()
             self.current_room = new_room
+            localscope.update_scope(self)
     
     def enter_submap(self, place):
         # This will take the place the user wants to enter
@@ -121,6 +122,7 @@ class Player(Box):
                 print(f"You enter {proper(submap.name)}.")
                 submap.enter()
                 self.current_room = submap
+                localscope.update_scope(self)
                 return True
         else: 
             print(f"You don't see {place} here.")
@@ -132,6 +134,7 @@ class Player(Box):
             new_room = self.current_room.exit
             new_room.enter()
             self.current_room = new_room
+            localscope.update_scope(self)
             return True
         else: 
             print("There's no exit here.")
