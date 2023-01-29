@@ -1,1 +1,1 @@
-from gameworld.items import tradeitems
+from gameworld.items import *
