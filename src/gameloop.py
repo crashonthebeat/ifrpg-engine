@@ -32,6 +32,7 @@ def validate_action(action, obj, ind_obj, prep):
     elif action in unequip_actions: pc.unequip_item(obj)    # Unequip Item
     elif action in use_actions: pc.use_item(obj, ind_obj)   # Use item
     elif action == 'sheath': pc.sheath_weapon(obj)          # Sheath Item
+    elif action == 'draw': pc.draw_weapon(obj)              # Draw Item
     elif action == "quit": return False                     # Exit to Menu
     # Default: 
     else: print(f"You don't know how to {action}")

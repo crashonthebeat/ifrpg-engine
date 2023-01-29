@@ -80,6 +80,21 @@ class SceneScope(BoxScope):
 scenescope = SceneScope('scenescope')  # All non-player inventories in a room.
 
 
+class WeaponScope(BoxScope):
+    # This is a scope for all sheathes on the player's body.
+    def __init__(self, name):
+        BoxScope.__init__(self, name)
+        self.boxes = []
+
+    def update_scope(self, player):
+        self.boxes = []
+        for item in player.worn_items:
+            if 'sheath' in item.entity_type:
+                self.boxes.append(item)
+
+weaponscope = WeaponScope('weaponscope')
+
+
 class LocalScope(BoxScope):
     # This is the class for all accessible inventories in the local scene, 
     # including the player inventory and equipped items. 
@@ -96,6 +111,7 @@ class LocalScope(BoxScope):
 
         selfscope.update_scope(player)
         scenescope.update_scope(player)
+        weaponscope.update_scope(player)
 
         self.boxes.extend(scenescope.boxes)
         self.boxes.extend(selfscope.boxes)

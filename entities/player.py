@@ -1,6 +1,6 @@
 from entities.basic import Entity
 from entities.boxes import Box
-from entities.boxscope import localscope, scenescope, selfscope
+from entities.boxscope import localscope, scenescope, selfscope, weaponscope
 from src.text import proper, intr, wraptxt
 from itertools import chain
 
@@ -35,6 +35,8 @@ class Player(Box):
             for line in self.list_items(): print(line)
         print("You are wielding: ")
         [print(item.name) for item in self.wield_items]
+        print("You are wearing: ")
+        [print(item.name) for item in self.worn_items]
 
     def open_close(self, obj, action):
         # This and the following method will check if the object is
@@ -294,10 +296,14 @@ class Player(Box):
         if box.entity_type == 'rack' and box.test_item(item) == False:
             return True
         else:
+            if item in self.wield_items: 
+                self.wield_items.remove(item)
+                self.used_slots += (item.itemsize)  # Add hand slots.
+                self.used_slots -= (item.hands * 10)
             box.add_item(item)
             self.remove_item(item)
             print(f"You put {item.name} {prep} {box.name}.")
-            if item in self.wield_items: self.wield_items.remove(item)
+
 
     #####################
     ### EQUIP METHODS ###
@@ -368,3 +374,72 @@ class Player(Box):
             print(f"You remove {item.name} and hold it in your hands.")
             self.worn_items.remove(item)
             self.used_slots += item.itemsize
+
+    def sheath_all(self):
+        for item in self.wield_items:
+            for sheath in weaponscope.boxes:
+                if sheath.test_item(item, verbose=False):
+                    sheath.add_item(item)
+                    self.wield_items.remove(item)
+                    self.used_slots += (item.itemsize)  # Add hand slots.
+                    self.used_slots -= (item.hands * 10)
+                    self.remove_item(item)
+                    print(f"You return {item.name} to {sheath.name}.")
+
+        for item in self.wield_items:
+            print(f"You could not find a place for {item.name}")
+
+    def sheath_weapon(self, search_item):
+        if not search_item:
+            self.sheath_all()
+            return True
+
+        item, box = self.find_item(search_item, self)
+        if not item: return True
+
+        elif item not in self.wield_items:
+            print(f"You are not currently wielding {item.name}")
+            return True
+        elif item in self.wield_items:
+            for sheath in weaponscope.boxes:
+                if sheath.test_item(item, verbose=False):
+                    sheath.add_item(item)
+                    self.wield_items.remove(item)
+                    self.used_slots += (item.itemsize)  # Add hand slots.
+                    self.used_slots -= (item.hands * 10)
+                    self.remove_item(item)
+                    print(f"You return {item.name} to {sheath.name}.")
+
+    def draw_action(self, item, sheath):
+        if  (item.hands * 10 - item.itemsize) > \
+            (self.carry_slots - self.used_slots):
+            # If there's too much in player hands to wield item.
+            print(
+                f"You cannot effectively wield {item.name}! " +
+                f"{item.name.capitalize()} needs {item.hands} hands free.")
+            print("You will need to put some things away first.")
+            return True
+        else: 
+            # Otherwise, the item can be wielded, so wield it.
+            print(f"You draw {item.name}.")
+            sheath.remove_item(item)
+            self.add_item(item)
+            self.wield_items.append(item)  # add item to wielded items.
+            self.used_slots -= (item.itemsize)  # Add hand slots.
+            self.used_slots += (item.hands * 10)
+
+    def draw_all(self):
+        for sheath in weaponscope.boxes:
+            for item in list(sheath.inventory.keys()):
+                self.draw_action(item, sheath)
+
+    def draw_weapon(self, search_item):
+        if search_item == False:
+            self.draw_all()
+            return True
+
+        item, sheath = self.find_item(search_item, weaponscope)
+        if not item: return True
+        else: self.draw_action(item, sheath)
+        
+                    

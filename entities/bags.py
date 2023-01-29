@@ -20,7 +20,7 @@ class Sheath(Rack, Apparel):
     def __init__(self, name, item_type, slots, size_limit, primary_slot='belt', itemsize=10):
         Apparel.__init__(self, name, pl_name='bags', itemsize=10, primary_slot='belt')
         Rack.__init__(self, name, item_type, slots, size_limit)
-        self.entity_type = 'apparel sheath'
+        self.entity_type = 'apparel_sheath'
         self.inventory = {}
         self.occupied_slots = {
             'belt': 40
