@@ -3,7 +3,6 @@
 # either the method's scope or the user selected scope.
 
 from entities.basic import Entity
-from gameworld import *
 
 class BoxScope(Entity):
     # This is the class for all global inventory objects. Each scope will

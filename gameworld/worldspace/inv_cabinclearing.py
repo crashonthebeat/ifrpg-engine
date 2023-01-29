@@ -1,6 +1,7 @@
 from gameworld.items.apparel import *
 from gameworld.items.boxes import *
 from gameworld.items.keyitems import *
+from gameworld.items.tools import *
 from gameworld.items.tradeitems import *
 from gameworld.worldspace.cabinclearing import *
 
@@ -15,6 +16,10 @@ armor_chest.inventory = {
 
 cabin_loft.inventory = {
     pc_armorchest_key: 1, cork_sandals: 1
+}
+
+woodshed.inventory = {
+    wood_lever: 2
 }
 
 cabin_safe_door.keys = [player_vault_key]

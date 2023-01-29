@@ -1,7 +1,7 @@
 from entities.basic import Entity
 from entities.boxes import Box
 from entities.boxscope import localscope, scenescope, selfscope
-from src.text import proper, intr
+from src.text import proper, intr, wraptxt
 
 directions = [
     "north", "east", "south", "west", "northeast", "northwest",
@@ -14,9 +14,11 @@ class Player(Box):
         self.entity_type = 'player'
         self.current_room = current_room
         self.list_desc = 'in your hands'
-        self.worn_items = []  # A list of items
-        self.held_items = []  # A list of items
-        self.inventory = {}  # A dict of items - "inventory"
+        self.worn_items = []  # Items worn on body
+        self.held_items = []  # Items not in a pouch/bag
+        self.wield_items = []  # Tools/Weapons wielded
+        self.hands = 2  # We only got 2
+        self.inventory = {}  # A dict of items
         # This game engine doesn't have a classic inventory where anything
         # you pick up goes into a pile above your head. You will have a 
         # limited space to put things based on weight and size. So, if
@@ -294,7 +296,29 @@ class Player(Box):
             self.worn_items.append(item)
             # add the item to worn items.
             print(f"You equip {item.name}.")
+            if item.isbox: 
+                localscope.update_scope(self)
+                item.closed = False
         else: return True
+
+    def wield_item(self, item):
+        if item.hands > self.hands:
+            print(f"You need {item.hands} hands to hold this.")
+            return True
+        else:
+            if item.hands == 1:
+                print(f"You hold {item.name} in your hand, ready to use it.")
+            else: 
+                print(f"You hold {item.name} in your hands, ready to use it.")
+            self.wield_items.append(item)
+            self.hands -= item.hands
+        
+        if item.use_hands > self.hands:
+            for line in wraptxt(
+                f"{item.name.capitalize()} needs {str(item.use_hands)} more " +
+                f"hand to use and you have {str(self.hands)} free. You will " +
+                "need to put an item away to use this one."
+            ): print(line) 
 
     def equip_item(self, search_item):
         # This method searches for an item, tests what it is,
@@ -304,11 +328,15 @@ class Player(Box):
         item, box = self.find_item(search_item, self)
 
         if not item: return True
-        elif item.entity_type == 'apparel': 
-            self.wear_item(item)
-            if item.isbox: 
-                localscope.update_scope(self)
-                item.closed = False
+        elif item.entity_type == 'apparel': self.wear_item(item)
+        elif item.entity_type == 'tool': self.wield_item(item)
         else: print("You can't equip that!")
+
+    def unequip_item(self, search_item):
+        item, box = self.find_item(search_item, self)
+        if not item: return True
+        elif item in self.worn_items:
+            self.worn_items.remove(item)
+        
 
         

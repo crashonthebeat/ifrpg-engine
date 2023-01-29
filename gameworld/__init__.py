@@ -4,6 +4,7 @@
 # Overworlds can go into the root worldspace folder. 
 
 import gameworld.worldspace
+import gameworld.items
 from entities.player import Player
 
 pc = Player("Thom the Tester", gameworld.worldspace.cabinclearing.start_cabin)

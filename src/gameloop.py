@@ -14,6 +14,7 @@ open_actions = ['open', 'close', 'unlock']
 put_actions = ['place', 'put', 'set', 'mount']
 equip_actions = ['equip', 'eq', 'wear', 'don', 'wield', 'arm']
 unequip_actions = ['unequip', 'uq', 'remove', 'strip', 'unarm']
+use_actions = ['use', 'activate', 'push']
 
 
 def validate_action(action, obj, ind_obj, prep):
@@ -29,6 +30,7 @@ def validate_action(action, obj, ind_obj, prep):
         pc.place_item(obj, ind_obj, prep)                   # Place Item
     elif action in equip_actions: pc.equip_item(obj)        # Equip Item
     elif action in unequip_actions: pc.unequip_item(obj)    # Unequip Item
+    elif action in use_actions: pc.use_item(obj, ind_obj)   # Use item
     elif action == "quit": return False                     # Exit to Menu
     # Default: 
     else: print(f"You don't know how to {action}")

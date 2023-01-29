@@ -1,5 +1,5 @@
 from entities.rooms import Room, Door
-from gameworld.worldspace.auralia import *
+from gameworld.worldspace.auralia import ardanion_south
 
 #######################################
 ### START AREA - THE CABIN CLEARING ###
