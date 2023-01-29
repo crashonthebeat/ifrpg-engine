@@ -14,19 +14,18 @@ class Player(Box):
         self.entity_type = 'player'
         self.current_room = current_room
         self.list_desc = 'in your hands'
-        self.worn_items = []  # A list of items
+        self.worn_items = []  # A dict of items:slot
         self.inventory = {}  # A dict of items - "inventory"
         # This game engine doesn't have a classic inventory where anything
         # you pick up goes into a pile above your head. You will have a 
         # limited space to put things based on weight and size. So, if
         # you pick something up it'll go into your hands if you have a
         # free hand.
-        self.open = True
+        self.closed = False
 
     def describe(self):
         for line in self.desc: print(line)
         if len(self.inventory) > 0:
-            print("You are currently holding:")
             for line in self.list_items(): print(line)
 
     def open_close(self, obj, action):
@@ -50,10 +49,10 @@ class Player(Box):
         #
         elif action == 'open':
             box, parent = self.find_item(obj, localscope)
-            box.open_box()
+            if box: box.open_box()
         elif action == 'close':
             box, parent = self.find_item(obj, localscope)
-            box.close_box()
+            if box: box.close_box()
 
     #######################
     ### UTILITY METHODS ###
@@ -75,11 +74,9 @@ class Player(Box):
             return False, False
         elif box.name == self.current_room.name:
             return item, box
-        elif box and not box.open:
+        elif box and box.closed:
             print(f"You don't see {search_item} here.")
             return False, False
-        elif box and box.open:
-            return item, box
         else:
             return item, box
 
@@ -196,7 +193,7 @@ class Player(Box):
         found = 0
         found_item = False
 
-        for item in self.held_items.keys():
+        for item in self.inventory.keys():
             if search_item in item.name and found == 0:
                 found += 1
                 found_item = item
@@ -204,7 +201,9 @@ class Player(Box):
                 print(f"Which {search_item} do you want to drop?")
                 return True
         
-        if found_item:
+        if found_item and found_item in self.worn_items:
+            print("You need to unequip that first.")
+        elif found_item:
             self.remove_item(found_item)
             self.current_room.add_item(found_item)
             print(f"You drop {found_item.name}")
@@ -221,8 +220,56 @@ class Player(Box):
         # Now check if player has item in hands.
         else: item, parent = self.find_item(search_item, self)
         if not item: return True
+        elif item in self.worn_items:
+            print("You need to unequip that first.")
         else:
             box.add_item(item)
             self.remove_item(item)
             print(f"You put {item.name} {prep} {box.name}.")
 
+    #####################
+    ### EQUIP METHODS ###
+    #####################
+
+    def test_for_fit(self, item):
+        # This method iterates over all items worn, and checks the test
+        # item against all slots currently occupied. If the method finds
+        # a matching layer on a matching slot, then the item does not fit
+
+        itemslots = item.occupied_slots  # To enhance readability
+
+        for article in self.worn_items:  # Looping over all items
+            usedslots = article.occupied_slots  # Another readability thing
+            for slot in itemslots:  # looping over all item's slots
+                # Keep going until you find a matching layer on a slot
+                if slot not in usedslots.keys(): pass
+                elif itemslots[slot] == usedslots[slot]:
+                    print("That won't fit over what you're wearing!")
+                    return False
+        
+        # Otherwise the item fits.
+        return True
+
+    def wear_item(self, item):
+        itemfits = self.test_for_fit(item)  # Test item for fit
+
+        if itemfits:
+            self.worn_items.append(item)
+            # add the item to worn items.
+            print(f"You equip {item.name}.")
+        else: return True
+
+    def equip_item(self, search_item):
+        # This method searches for an item, tests what it is,
+        # and if it's apparel, passes it to the wear_item
+        # method.
+        
+        item, box = self.find_item(search_item, self)
+
+        if not item: return True
+        elif item.entity_type == 'apparel': self.wear_item(item)
+        else: print("You can't equip that!")
+
+        if item.isbox: 
+            localscope.update_scope(self)
+            item.closed = False

@@ -27,6 +27,8 @@ def validate_action(action, obj, ind_obj, prep):
     elif action in drop_actions: pc.drop_item(obj)          # Drop Item
     elif action in put_actions: 
         pc.place_item(obj, ind_obj, prep)                   # Place Item
+    elif action in equip_actions: pc.equip_item(obj)        # Equip Item
+    elif action in unequip_actions: pc.unequip_item(obj)    # Unequip Item
     elif action == "quit": return False                     # Exit to Menu
     # Default: 
     else: print(f"You don't know how to {action}")

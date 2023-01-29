@@ -12,3 +12,5 @@ class Backpack(Box, Apparel):
         self.occupied_slots = {
             'back': 6, 'l_shldr': 6, 'r_shldr': 6, 
         }
+        self.isbox = True
+        self.list_desc = f"in {self.name}"

@@ -1,5 +1,5 @@
 from entities.basic import Item
-from src.text import numstr, proper, wraptxt
+from src.text import numstr, wraptxt, intr
 
 class Box(Item):
     # Boxes are anything that has an internal inventory. A player and a room
@@ -16,9 +16,7 @@ class Box(Item):
     def describe(self):
         for line in self.desc: print(line)
         if self.closed: pass
-        else: 
-            print(f"Inside {self.name}:")
-            [print(line) for line in self.list_items()]
+        else: [print(line) for line in self.list_items()]
 
     def add_item(self, item):
         if item in self.inventory.keys():
@@ -59,11 +57,15 @@ class Box(Item):
             # First all items are separated into the above categories
             if (item.isbox and len(item.inventory) > 0) and not item.closed:
                 openboxes.append(item)
+            elif self.entity_type == 'player':
+                if item in self.worn_items: pass 
+                # Worn items are described in a different way.
+                else: nonboxes[item] = self.inventory[item]
             else:
                 nonboxes[item] = self.inventory[item]
 
         itemcnt = len(nonboxes)  # A count of items left to add to the string
-        all_items = f"{proper(self.list_desc)}: "  # The itemlist starter
+        all_items = f"{intr(self.list_desc.capitalize())}: "  # The itemlist starter
 
         for item in nonboxes.keys():
             qty = nonboxes[item]

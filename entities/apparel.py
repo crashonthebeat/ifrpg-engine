@@ -49,3 +49,11 @@ class Boots(Apparel):
         self.occupied_slots = {
             'ankles': 4, 'feet': 4
         }
+
+class Shoes(Apparel):
+    def __init__(self, name, pl_name, primary_slot='feet'):
+        Apparel.__init__(self, name, pl_name, primary_slot='feet')
+        self.primary_slot = primary_slot
+        self.occupied_slots = {
+            'feet': 4
+        }

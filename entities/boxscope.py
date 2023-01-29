@@ -28,6 +28,7 @@ class BoxScope(Entity):
         found_box = False 
 
         for box in self.boxes:  # Loop over all boxes
+            print(box.name)
             for item in box.inventory.keys():  # Loop over all items in a box
                 if search_item in item.name and found == 0:  
                     # If search term matches and item hasn't been found
@@ -52,6 +53,7 @@ class SelfScope(BoxScope):
     def update_scope(self, player):
         # When called, this method will find any container on the body, 
         # ensure that it is opened and remake the list.
+        self.boxes = [player]
         for item in player.worn_items:
             if item.isbox: self.boxes.append(item)
         

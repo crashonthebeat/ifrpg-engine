@@ -11,6 +11,7 @@ class Apparel(Item):
         Item.__init__(self, name, pl_name)
         self.primary_slot = primary_slot
         self.occupied_slots = {}
+        self.entity_type = 'apparel'
         # Occupied slots are a dict of body slots and the layer they
         # occupy, so that a person can't wear two pieces of armor that
         # both cover the chest, for example, but they can wear a shirt

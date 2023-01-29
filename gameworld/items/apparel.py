@@ -14,3 +14,8 @@ leather_boots = Boots(
     "a pair of leather boots",
     "pairs of leather boots"
 )
+
+cork_sandals = Shoes(
+    "a pair of cork sandals",
+    "pairs of cork sandals"
+)
