@@ -289,10 +289,15 @@ class Player(Box):
         if not item: return True
         elif item in self.worn_items:
             print("You need to unequip that first.")
+            return True
+        else: pass
+        if box.entity_type == 'rack' and box.test_item(item) == False:
+            return True
         else:
             box.add_item(item)
             self.remove_item(item)
             print(f"You put {item.name} {prep} {box.name}.")
+            if item in self.wield_items: self.wield_items.remove(item)
 
     #####################
     ### EQUIP METHODS ###
@@ -305,7 +310,7 @@ class Player(Box):
             self.worn_items.append(item)
             self.used_slots -= item.itemsize
             # add the item to worn items.
-            print(f"You equip {item.name}.")
+            print(f"You put {item.name} on your {item.primary_slot}.")
             if item.isbox: 
                 localscope.update_scope(self)
                 item.closed = False
@@ -337,8 +342,8 @@ class Player(Box):
         
         item, box = self.find_item(search_item, self)
         if not item: return True
-        elif item.entity_type == 'apparel': self.wear_item(item)
-        elif item.entity_type == 'tool': self.wield_item(item)
+        elif 'apparel' in item.entity_type: self.wear_item(item)
+        elif 'weapon' in item.entity_type: self.wield_item(item)
         else: print("You can't equip that!")
 
     def unequip_item(self, search_item):
@@ -363,4 +368,3 @@ class Player(Box):
             print(f"You remove {item.name} and hold it in your hands.")
             self.worn_items.remove(item)
             self.used_slots += item.itemsize
-

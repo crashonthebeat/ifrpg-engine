@@ -5,8 +5,8 @@ class Box(Item):
     # Boxes are anything that has an internal inventory. A player and a room
     # can both be a box, as they both have inventories. Boxes can also 
     # contain other inventories.
-    def __init__(self, name, closed, locked):
-        Item.__init__(self, name, itemsize=128, pl_name=False)
+    def __init__(self, name, closed, locked, itemsize=0):
+        Item.__init__(self, name, itemsize=0, pl_name=False)
         self.inventory = {}
         self.isbox = True
         self.closed = closed
@@ -148,7 +148,26 @@ class RoomBox(Box):
         self.locked = locked
 
 
-class Holster(Box):
+class Rack(Box):
     # Holsters are boxes that have a specific slot for one type of item. 
-     def __init__(self, name):
-        Box.__init__(self, name)
+    def __init__(self, name, item_type, slots, size_limit):
+        Box.__init__(self, name, closed=False, locked=False)
+        self.item_type = item_type  # What entity types this rack holds
+        self.slots = slots  # How many items can this hold
+        self.size_limit = size_limit  # Size limit for each slot
+        self.entity_type = 'rack'
+        self.list_desc = f"on {self.name}"
+        self.fixed = True
+
+    def test_item(self, item, verbose=True):
+        if item.entity_type != self.item_type:
+            if verbose: print(f"{self.name.capitalize()} can't hold that.")
+            return False
+        elif item.itemsize > self.size_limit:
+            if verbose: print(f"{item.name.capitalize()} won't fit!")
+            return False
+        elif len(self.inventory) > self.slots:
+            if verbose: print(f"There isn't any more room for {item.name}.")
+            return False
+        else: return True
+
