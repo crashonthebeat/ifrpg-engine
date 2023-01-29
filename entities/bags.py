@@ -13,4 +13,5 @@ class Backpack(Box, Apparel):
             'back': 6, 'l_shldr': 6, 'r_shldr': 6, 
         }
         self.isbox = True
+        self.locked = False
         self.list_desc = f"in {self.name}"
