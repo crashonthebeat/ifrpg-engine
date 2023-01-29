@@ -28,7 +28,6 @@ class BoxScope(Entity):
         found_box = False 
 
         for box in self.boxes:  # Loop over all boxes
-            print(box.name)
             for item in box.inventory.keys():  # Loop over all items in a box
                 if search_item in item.name and found == 0:  
                     # If search term matches and item hasn't been found
