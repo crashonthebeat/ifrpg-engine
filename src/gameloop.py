@@ -10,30 +10,24 @@ describe_actions = ['look', 'view', 'describe']
 glance_actions = ['glance', 'peek']
 take_actions = ['take', 'get', 'grab', 'retrieve', 'nab']
 drop_actions = ['drop', 'yeet']
+open_actions = ['open', 'close', 'unlock']
 put_actions = ['place', 'put', 'set', 'mount']
 equip_actions = ['equip', 'eq', 'wear', 'don', 'wield', 'arm']
 unequip_actions = ['unequip', 'uq', 'remove', 'strip', 'unarm']
 
 
 def validate_action(action, obj, ind_obj, prep):
-    # Travel Action (Moving between roomspaces): 
-    if action in travel_actions: pc.travel(action, obj)
-    # Enter Action (Moving to Submap):
-    elif action  == 'enter': pc.enter_submap(obj)
-    # Exit Action (Moving out of Submap):
-    elif action == 'exit': pc.exit()
-    # Open/close Door:
-    elif action == 'open': pc.open_door(obj)
-    elif action == 'close': pc.close_door(obj)
-    elif action == 'unlock': pc.unlock_door(obj)
-    # Describe Action (Getting an object's description): 
-    elif action in describe_actions: pc.look(obj, ind_obj)
-    # Quick Describe Action (Glancing):
-    elif action in glance_actions: pc.glance(obj, ind_obj)
-    # Take Action:
-    elif action in take_actions: pc.get_item(obj, ind_obj)
-    # Exit to Menu: 
-    elif action == "quit": return False
+    if action in travel_actions: pc.travel(action, obj)     # Travel Action
+    elif action  == 'enter': pc.enter_submap(obj)           # Enter Submap
+    elif action == 'exit': pc.exit()                        # Exit Submap
+    elif action in open_actions: pc.open_close(obj, action) # Open/Close Thing
+    elif action in describe_actions: pc.look(obj, ind_obj)  # Describe Thing
+    elif action in glance_actions: pc.glance(obj, ind_obj)  # Glance Action
+    elif action in take_actions: pc.get_item(obj, ind_obj)  # Take Item
+    elif action in drop_actions: pc.drop_item(obj)          # Drop Item
+    elif action in put_actions: 
+        pc.place_item(obj, ind_obj, prep)                   # Place Item
+    elif action == "quit": return False                     # Exit to Menu
     # Default: 
     else: print(f"You don't know how to {action}")
 
