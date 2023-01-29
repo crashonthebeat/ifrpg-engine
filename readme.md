@@ -1,4 +1,4 @@
-# IFRPG-ENGINE v 0.2.5 - Hand Stuff with some interaction
+# IFRPG-ENGINE v 0.3 - Clothes, Tools, and notWeapons
 
 This is a text-adventure rpg engine written from scratch in python. I'm not intending this to be something for people to just use out of the box, since this will just be a creative outlet for me as well as a vessel to expand my knowledge of python, as well as git, so you'll hopefully see how I improve with commits and other things. 
 
@@ -10,6 +10,8 @@ Additionally, I've rewritten this code several times, not including this time. I
 * Travelling across mapspaces (to and from overworld, to and from submaps)
 * Opening, Closing, and Unlocking Doors/Directions (Key functionality will come with the usable items update)
 * Item interaction, getting items, placing items into containers or dropping them into the room
+* Equipment: Wieldable tools, wearable clothes and containers
+* Holsters, Sheathes and Racks that can only take specific items
 
 ## The Plan
 
@@ -17,36 +19,11 @@ This Engine will be a complex series of python files that will eventually be abl
 
 I'm going to work on different parts of the game methodically. The reason for this is I want to gather all the features I want that could be related to one of the parts, work out how they interact with existing code and with each other, and then put them to silicon. 
 
-### Stage 1 - The Basics **Complete**
+*Stage 1 - The Basics **Complete***
 
-* Classes - Different Entity Types
-    * Basic Entities: Location, Item, and Person
-    * Additional Entity Types: Container (That which holds an item), Gamestate (Puzzle state, Quest state, story state), Topic (for Dialogue), Probably more to come
-* Travelling
-    * Going between roomspaces, subspaces, and the overworld. 
-    * What happens when you enter and leave a room.
-* Descriptions and Looking
-    * The text that displays when you look at a certain thing, whether it be a person, place, or thing
-    * Looking closer at specific objects of interest, finding out additional information.
+*Stage 2 - Items and Containers **Complete***
 
-### Stage 2 - Items and Containers **Complete**
-
-* Three types of inventories:
-    * Root Inventories, like that of a room's inventory or your own inventory
-    * Sub-Inventories, things in an open chest in a room or a backpack, pouch, or holster
-    * Equipped Items: Things on your person, or things in a room that can be used
-* Finding Items - Iterating over several lists
-    * How does the game find items? How does it decide what inventory(ies) to search through? \
-    In a nutshell, the find item method will have a set scope. Some scopes only include certain inventories, like equip/unequip only looking for items in the user's inventory with the correct equip state, and "get" only looking for roomspace items, unless a specific container was called. This was to me the hardest method to figure out, and I didn't plan it out well in advance, hence the need to rewrite the entire code because of it. I'm hoping I learn from my mistakes.
-
-### Stage 3 - Interactive Items
-
-* Interacting with items
-    * As I said above, different interactions will have different search scopes, which makes it important to add specific attributes to items. For example, adding an is_container attribute to an item in order to get a search method to search those containers, but also an is_open method so closed/locked chests cant be cheated through.
-* Equipment
-    * Equipping and Unequipping items presents its own challenges, like how to deal with item slots in a way that makes sense but also fulfills my need to make things complicated. In the previous rewrite, I used slot amounts for specific parts of the body, ex. a jacket would take 1 slot on the upper arm but a shirt would only take up half since it's presumably thinner. This enabled different items to share the same body-space. Instead of this, I will keep body slots but use layers, so that two clothes/armors can share the same item space but not if they're the same layer. This will also let me do things like 'you can't put your undershirt on over your chestplate! take that off first.' If that gives you an idea of how complicated I want this engine to be, and you're not scared, you're my kinda people.
-* Encumberance
-    * Items should have weight and size. Since your main "inventory" is just your hands, items should reflect how much of that space they take up. 
+*Stage 3 - Interactive Items **Complete***
 
 ### Stage 4 - Basic Puzzles and Quests
 Puzzles and Quests and the same thing: the player needs to do a certain number of things, possibly in a specific order, possibly in different locations, in order to satisfy a requirement. Once that is satisfied, something happens.
