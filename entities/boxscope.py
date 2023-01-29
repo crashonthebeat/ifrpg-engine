@@ -2,14 +2,12 @@
 # aggregates of all inventories in an area to iterate over, depending on
 # either the method's scope or the user selected scope.
 
-from entities.basic import Entity
-
-class BoxScope(Entity):
+class BoxScope:
     # This is the class for all global inventory objects. Each scope will
     # include closed inventories, as the specific caller methods should be
     # the ones to determine whether or not an item can be called. 
     def __init__(self, name):
-        Entity.__init__(self, name)
+        self.name = name
         self.boxes = []  # All boxes in inventory
 
     def update_scope(self):
@@ -28,6 +26,7 @@ class BoxScope(Entity):
 
         for box in self.boxes:  # Loop over all boxes
             for item in box.inventory.keys():  # Loop over all items in a box
+                print(item.name)  # DEBUG
                 if search_item in item.name and found == 0:  
                     # If search term matches and item hasn't been found
                     found += 1  # Increment counter
@@ -94,12 +93,14 @@ class LocalScope(BoxScope):
     def update_scope(self, player):
         # When this method is called, it will update the scope to add both
         # scene and self scope.
+        localscope.boxes = []  # Clear out localscope
+
         selfscope.update_scope(player)
         scenescope.update_scope(player)
-            
 
         self.boxes.extend(scenescope.boxes)
         self.boxes.extend(selfscope.boxes)
+
 
 localscope = LocalScope('localscope')
 
