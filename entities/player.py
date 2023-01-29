@@ -2,6 +2,7 @@ from entities.basic import Entity
 from entities.boxes import Box
 from entities.boxscope import localscope, scenescope, selfscope
 from src.text import proper, intr, wraptxt
+from itertools import chain
 
 directions = [
     "north", "east", "south", "west", "northeast", "northwest",
@@ -32,7 +33,8 @@ class Player(Box):
         for line in self.desc: print(line)
         if len(self.inventory) > 0:
             for line in self.list_items(): print(line)
-        print(self.used_slots)
+        print("You are wielding: ")
+        [print(item.name) for item in self.wield_items]
 
     def open_close(self, obj, action):
         # This and the following method will check if the object is
@@ -323,11 +325,7 @@ class Player(Box):
             return True
         else: 
             # Otherwise, the item can be wielded, so wield it.
-            # This if/else just checks if it's one-handed or not.
-            if item.hands == 1:
-                print(f"You wield {item.name} in your hand.")
-            else:
-                print(f"You wield {item.name} in your hands.")
+            print(f"You take a ready stance with {item.name}.")
             self.wield_items.append(item)  # add item to wielded items.
             self.used_slots -= (item.itemsize)  # Add hand slots.
             self.used_slots += (item.hands * 10)
@@ -346,7 +344,7 @@ class Player(Box):
     def unequip_item(self, search_item):
         item, box = self.find_item(search_item, self)
         if not item: return True
-        elif item not in self.worn_items or self.wield_items:
+        elif item not in chain(self.worn_items, self.wield_items):
             print(f"You haven't equipped {item.name}.")
             return True
         elif item in self.wield_items:
@@ -354,6 +352,7 @@ class Player(Box):
             print(f"You drop your stance with {item.name} but still hold it.")
             self.used_slots -= (item.hands * 10)
             self.used_slots += (item.itemsize)  # Add hand slots.
+            return True
         else: pass
 
         if item.itemsize > (self.carry_slots - self.used_slots):

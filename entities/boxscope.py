@@ -26,7 +26,6 @@ class BoxScope:
 
         for box in self.boxes:  # Loop over all boxes
             for item in box.inventory.keys():  # Loop over all items in a box
-                print(item.name)  # DEBUG
                 if search_item in item.name and found == 0:  
                     # If search term matches and item hasn't been found
                     found += 1  # Increment counter
