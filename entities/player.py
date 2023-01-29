@@ -53,13 +53,13 @@ class Player(Box):
         # BOX OPEN/CLOSE
         #
         elif action == 'open':
-            box, parent = self.find_item(obj, localscope)
+            box, parent = self.find_item(obj, scenescope)
             if box: box.open_box()
         elif action == 'close':
-            box, parent = self.find_item(obj, localscope)
+            box, parent = self.find_item(obj, scenescope)
             if box: box.close_box()
         elif action == 'unlock':
-            box, parent = self.find_item(obj, localscope)
+            box, parent = self.find_item(obj, scenescope)
             if box: box.unlock_box(self)
 
     #######################
@@ -131,9 +131,8 @@ class Player(Box):
             # The below methods transfer a player from roomspace to another.
             print(f"You {action} {direction}.")
             new_room = self.current_room.exits[direction]
-            new_room.enter()
             self.current_room = new_room
-            localscope.update_scope(self)
+            self.current_room.enter(self)
     
     def enter_submap(self, place):
         # This will take the place the user wants to enter
@@ -144,9 +143,8 @@ class Player(Box):
             if place in name:
                 submap = self.current_room.submaps[name]
                 print(f"You enter {proper(submap.name)}.")
-                submap.enter()
                 self.current_room = submap
-                localscope.update_scope(self)
+                self.current_room.enter(self)
                 return True
         else: 
             print(f"You don't see {place} here.")
@@ -156,9 +154,8 @@ class Player(Box):
         # there's an exit. 
         if self.current_room.exit:
             new_room = self.current_room.exit
-            new_room.enter()
             self.current_room = new_room
-            localscope.update_scope(self)
+            self.current_room.enter(self)
             return True
         else: 
             print("There's no exit here.")
@@ -198,18 +195,20 @@ class Player(Box):
     ####################
 
     def add_item(self, item):
-        # TODO Check if item can be held
 
         if item in self.inventory.keys():
             self.inventory[item] += 1
         else:
             self.inventory[item] = 1
             self.held_items.append(item)  # Add to held items
+        
+        self.used_slots += item.itemsize
 
     def remove_item(self, item):
         if self.inventory[item] == 1:
             del self.inventory[item]
             self.held_items.remove(item)  # Remove from Held Items
+            self.used_slots -= item.itemsize
         else:
             self.inventory[item] -= 1
 
@@ -231,6 +230,10 @@ class Player(Box):
         if not item: return True
         if item.fixed:
             print(f"You can't pick up {item.name}!")
+        elif item.itemsize > (self.carry_slots - self.used_slots):
+            print("You can't hold that with everything else " +
+            "you are carrying!")
+            print("Put something away or drop something first.")
         else:
             box.remove_item(item)
             self.add_item(item)
@@ -297,6 +300,7 @@ class Player(Box):
 
         if itemfits:
             self.worn_items.append(item)
+            self.used_slots -= item.itemsize
             # add the item to worn items.
             print(f"You equip {item.name}.")
             if item.isbox: 
@@ -341,3 +345,4 @@ class Player(Box):
         if not item: return True
         elif item in self.worn_items:
             self.worn_items.remove(item)
+            self.used_slots += item.itemsize
