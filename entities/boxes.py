@@ -6,7 +6,7 @@ class Box(Item):
     # can both be a box, as they both have inventories. Boxes can also 
     # contain other inventories.
     def __init__(self, name, closed, locked):
-        Item.__init__(self, name, pl_name=False)
+        Item.__init__(self, name, itemsize=128, pl_name=False)
         self.inventory = {}
         self.isbox = True
         self.closed = closed
@@ -142,8 +142,10 @@ class Box(Item):
 class RoomBox(Box):
     # This is for all containers that are stuck in a room.
     def __init__(self, name, closed, locked):
-        Item.__init__(self, name, pl_name=False)
+        Box.__init__(self, name, closed, locked)
         self.fixed = True
+        self.closed = closed
+        self.locked = locked
 
 
 class Holster(Box):

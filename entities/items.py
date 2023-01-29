@@ -33,12 +33,10 @@ class Apparel(Item):
 
 
 class Tool(Item):
-    def __init__(self, name, pl_name, itemsize, use_case, hands, use_hands):
+    def __init__(self, name, pl_name, itemsize, use_case, hands):
         Item.__init__(self, name, pl_name, itemsize)
         self.use_case = use_case  # What the tool does
-        self.hands = hands  # How many hands does this item take to hold.
-        self.use_hands = use_hands  # How many more hands to use the item
-        # Ex. hold a bow in one hand, need both hands to shoot.
+        self.hands = hands  # How many hands does this item take to wield.
         self.entity_type = 'tool'
 
 class Consumable(Item):
@@ -51,8 +49,8 @@ class KeyItem(Item):
     # KeyItems are important items that can unlock doors (hence the key) or
     # are otherwise important for advancing or changing the gamestate.
     # They are unique.
-    def __init__(self, name, itemsize):
-        Item.__init__(self, name, itemsize, pl_name=False)
+    def __init__(self, name, pl_name, itemsize):
+        Item.__init__(self, name, pl_name, itemsize)
 
 
 class TradeItem(Item):

@@ -31,6 +31,7 @@ class Room(Roomspace, Box):
         # A key of the direction and either what the room beyond should be,
         # or the a door, if the direction can be closed.
         self.inventory = {}
+        
 
     def describe(self):
         # This method will differ from other describe methods since it will

@@ -19,6 +19,7 @@ class Player(Box):
         self.wield_items = []  # Tools/Weapons wielded
         self.hands = 2  # We only got 2
         self.carry_slots = 20  # How much player can hold in hand.
+        self.used_slots = 0
         self.inventory = {}  # A dict of items
         # This game engine doesn't have a classic inventory where anything
         # you pick up goes into a pile above your head. You will have a 
@@ -60,6 +61,7 @@ class Player(Box):
         elif action == 'unlock':
             box, parent = self.find_item(obj, localscope)
             if box: box.unlock_box(self)
+
     #######################
     ### UTILITY METHODS ###
     #######################
@@ -85,6 +87,25 @@ class Player(Box):
             return False, False
         else:
             return item, box
+
+    def test_for_fit(self, item):
+        # This method iterates over all items worn, and checks the test
+        # item against all slots currently occupied. If the method finds
+        # a matching layer on a matching slot, then the item does not fit
+
+        itemslots = item.occupied_slots  # To enhance readability
+
+        for article in self.worn_items:  # Looping over all items
+            usedslots = article.occupied_slots  # Another readability thing
+            for slot in itemslots:  # looping over all item's slots
+                # Keep going until you find a matching layer on a slot
+                if slot not in usedslots.keys(): pass
+                elif itemslots[slot] == usedslots[slot]:
+                    print("That won't fit over what you're wearing!")
+                    return False
+        
+        # Otherwise the item fits.
+        return True
 
     ######################
     ### TRAVEL METHODS ###
@@ -271,25 +292,6 @@ class Player(Box):
     ### EQUIP METHODS ###
     #####################
 
-    def test_for_fit(self, item):
-        # This method iterates over all items worn, and checks the test
-        # item against all slots currently occupied. If the method finds
-        # a matching layer on a matching slot, then the item does not fit
-
-        itemslots = item.occupied_slots  # To enhance readability
-
-        for article in self.worn_items:  # Looping over all items
-            usedslots = article.occupied_slots  # Another readability thing
-            for slot in itemslots:  # looping over all item's slots
-                # Keep going until you find a matching layer on a slot
-                if slot not in usedslots.keys(): pass
-                elif itemslots[slot] == usedslots[slot]:
-                    print("That won't fit over what you're wearing!")
-                    return False
-        
-        # Otherwise the item fits.
-        return True
-
     def wear_item(self, item):
         itemfits = self.test_for_fit(item)  # Test item for fit
 
@@ -303,31 +305,32 @@ class Player(Box):
         else: return True
 
     def wield_item(self, item):
-        if item.hands > self.hands:
-            print(f"You need {item.hands} hands to hold this.")
+        # Test if player has free hands to use the tool effectively
+        # Item takes up all its effective hand slots to wield
+        # 1h = 10 slots, 2h = 20 slots. Otherwise item can be held.
+        if item.hands * 10 > (self.carry_slots - self.used_slots):
+            # If there's too much in player hands to wield item.
+            print(
+                f"You cannot effectively wield {item.name}! " +
+                f"{item.name.capitalize()} needs {item.hands} hands free.")
+            print("You will need to put some things away first.")
             return True
-        else:
+        else: 
+            # Otherwise, the item can be wielded, so wield it.
+            # This if/else just checks if it's one-handed or not.
             if item.hands == 1:
-                print(f"You hold {item.name} in your hand, ready to use it.")
-            else: 
-                print(f"You hold {item.name} in your hands, ready to use it.")
-            self.wield_items.append(item)
-            self.hands -= item.hands
-        
-        if item.use_hands > self.hands:
-            for line in wraptxt(
-                f"{item.name.capitalize()} needs {str(item.use_hands)} more " +
-                f"hand to use and you have {str(self.hands)} free. You will " +
-                "need to put an item away to use this one."
-            ): print(line) 
+                print(f"You wield {item.name} in your hand.")
+            else:
+                print(f"You wield {item.name} in your hands.")
+            self.wield_items.append(item)  # add item to wielded items.
+            self.used_slots += (item.hands * 10)  # Add hand slots.
 
     def equip_item(self, search_item):
         # This method searches for an item, tests what it is,
         # and if it's apparel, passes it to the wear_item
-        # method.
+        # or wield_item method.
         
         item, box = self.find_item(search_item, self)
-
         if not item: return True
         elif item.entity_type == 'apparel': self.wear_item(item)
         elif item.entity_type == 'tool': self.wield_item(item)
@@ -338,6 +341,3 @@ class Player(Box):
         if not item: return True
         elif item in self.worn_items:
             self.worn_items.remove(item)
-        
-
-        
