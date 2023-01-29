@@ -1,4 +1,5 @@
 from src.text import *
+from entities.boxscope import localscope, scenescope
 
 class Entity:
     # Everything noun that exists in the world will have the methods and 
@@ -69,12 +70,13 @@ class Roomspace(Entity):
         if self.exit: print(f"{ex('EXIT')}: {proper(self.exit.name)}.")
         # Finally, if this place is an exit, say so. 
 
-    def enter(self):
+    def enter(self, actor):
         # This is the method that performs all tasks necessary
         # when the player enters this specific room.
 
         # Separates previous roomscene until a better display method
         # is found. 
+        localscope.update_scope(actor)
         print(title('---' + proper(self.name) + '---'))
         # If the player has not visited a room, print the full 
         # description. Otherwise, give a partial one.
