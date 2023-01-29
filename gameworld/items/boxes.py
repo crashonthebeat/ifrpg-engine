@@ -1,3 +1,3 @@
-from entities.boxes import Box
+from entities.boxes import RoomBox
 
-armor_chest = Box("an armor chest", True, True)
+armor_chest = RoomBox("an armor chest", True, True)

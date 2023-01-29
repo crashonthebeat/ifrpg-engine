@@ -139,6 +139,13 @@ class Box(Item):
             print(f"I didn't understand that, {self.name} is still closed.")
 
 
+class RoomBox(Box):
+    # This is for all containers that are stuck in a room.
+    def __init__(self, name, closed, locked):
+        Item.__init__(self, name, pl_name=False)
+        self.fixed = True
+
+
 class Holster(Box):
     # Holsters are boxes that have a specific slot for one type of item. 
      def __init__(self, name):

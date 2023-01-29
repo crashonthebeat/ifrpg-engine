@@ -205,6 +205,8 @@ class Player(Box):
             # item and box. 
             item, box = self.find_item(search_item, scenescope)
         if not item: return True
+        if item.fixed:
+            print(f"You can't pick up {item.name}!")
         else:
             box.remove_item(item)
             self.add_item(item)
@@ -302,9 +304,11 @@ class Player(Box):
         item, box = self.find_item(search_item, self)
 
         if not item: return True
-        elif item.entity_type == 'apparel': self.wear_item(item)
+        elif item.entity_type == 'apparel': 
+            self.wear_item(item)
+            if item.isbox: 
+                localscope.update_scope(self)
+                item.closed = False
         else: print("You can't equip that!")
 
-        if item.isbox: 
-            localscope.update_scope(self)
-            item.closed = False
+        
