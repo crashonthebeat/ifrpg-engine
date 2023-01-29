@@ -4,7 +4,7 @@ class InteractItem(Item):
     # InteractItems can be interacted with by the player, but cannot be 
     # picked up or moved from the room. 
     def __init__(self, name, states, current_state, usable):
-        Item.__init__(self, name, pl_name=False)
+        Item.__init__(self, name, pl_name=False, itemsize=128)
         self.itemfunction = False  # What the item does
         self.itemtype = ''  # Button, Lever, Switch, etc.
         self.states = states  # How many positions the item can be in.
@@ -16,12 +16,13 @@ class InteractItem(Item):
         # More states would be like a switch, lever or a dial.
         self.item_name = name
         # The actual name will be overwritten with the item's state.
+        self.fixed = True
 
 
 class Apparel(Item):
     # These are items that can be picked up and worn or otherwise held. 
-    def __init__(self, name, pl_name, primary_slot):
-        Item.__init__(self, name, pl_name)
+    def __init__(self, name, pl_name, itemsize, primary_slot):
+        Item.__init__(self, name, pl_name, itemsize)
         self.primary_slot = primary_slot
         self.occupied_slots = {}
         self.entity_type = 'apparel'
@@ -32,8 +33,8 @@ class Apparel(Item):
 
 
 class Tool(Item):
-    def __init__(self, name, pl_name, use_case, hands, use_hands):
-        Item.__init__(self, name, pl_name)
+    def __init__(self, name, pl_name, itemsize, use_case, hands, use_hands):
+        Item.__init__(self, name, pl_name, itemsize)
         self.use_case = use_case  # What the tool does
         self.hands = hands  # How many hands does this item take to hold.
         self.use_hands = use_hands  # How many more hands to use the item
@@ -50,13 +51,13 @@ class KeyItem(Item):
     # KeyItems are important items that can unlock doors (hence the key) or
     # are otherwise important for advancing or changing the gamestate.
     # They are unique.
-    def __init__(self, name):
-        Item.__init__(self, name, pl_name=False)
+    def __init__(self, name, itemsize):
+        Item.__init__(self, name, itemsize, pl_name=False)
 
 
 class TradeItem(Item):
     # TradeItems are a nice word for trash items, some can be sold, but some
     # are truly useless.
-    def __init__(self, name, pl_name):
-        Item.__init__(self, name, pl_name)
+    def __init__(self, name, pl_name, itemsize):
+        Item.__init__(self, name, pl_name, itemsize)
 

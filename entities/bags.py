@@ -6,7 +6,7 @@ from entities.items import Apparel
 
 class Backpack(Box, Apparel):
     def __init__(self, name, primary_slot='back'):
-        Apparel.__init__(self, name, pl_name='bags', primary_slot='back')
+        Apparel.__init__(self, name, pl_name='bags', itemsize=20, primary_slot='back')
         self.primary_slot = primary_slot
         self.inventory = {}
         self.occupied_slots = {

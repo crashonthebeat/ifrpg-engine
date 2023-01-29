@@ -89,8 +89,9 @@ class Roomspace(Entity):
         self.list_exits()  # Finally, list all room exits.
 
 class Item(Entity):
-    def __init__(self, name, pl_name):
+    def __init__(self, name, pl_name, itemsize):
         Entity.__init__(self, name)
         self.pl_name = pl_name  # The plural name of an item.
         self.fixed = False  # Whether the object can move between inventories
         self.isbox = False
+        self.itemsize = itemsize  # How big the item is

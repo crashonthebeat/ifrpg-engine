@@ -18,6 +18,7 @@ class Player(Box):
         self.held_items = []  # Items not in a pouch/bag
         self.wield_items = []  # Tools/Weapons wielded
         self.hands = 2  # We only got 2
+        self.carry_slots = 20  # How much player can hold in hand.
         self.inventory = {}  # A dict of items
         # This game engine doesn't have a classic inventory where anything
         # you pick up goes into a pile above your head. You will have a 

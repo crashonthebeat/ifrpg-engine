@@ -17,7 +17,7 @@ from entities.items import Apparel
 
 class Tunic(Apparel):
     def __init__(self, name, pl_name, primary_slot='torso'):
-        Apparel.__init__(self, name, pl_name, primary_slot='torso')
+        Apparel.__init__(self, name, pl_name, itemsize=12, primary_slot='torso')
         self.primary_slot = primary_slot
         self.occupied_slots = {
             'l_shldr': 4, 'r_shldr': 4, 
@@ -26,7 +26,7 @@ class Tunic(Apparel):
 
 class Shirt(Apparel):
     def __init__(self, name, pl_name, primary_slot='torso'):
-        Apparel.__init__(self, name, pl_name, primary_slot='torso')
+        Apparel.__init__(self, name, pl_name, itemsize=4, primary_slot='torso')
         self.primary_slot = primary_slot
         self.occupied_slots = {
             'l_shldr': 2, 'r_shldr': 2, 'l_arm': 2, 'r_arm': 2, 
@@ -35,7 +35,7 @@ class Shirt(Apparel):
 
 class Trousers(Apparel):
     def __init__(self, name, pl_name, primary_slot='legs'):
-        Apparel.__init__(self, name, pl_name, primary_slot='legs')
+        Apparel.__init__(self, name, pl_name, itemsize=6, primary_slot='legs')
         self.primary_slot = primary_slot
         self.occupied_slots = {
             'hips': 3, 'l_thgh': 3, 'r_thgh': 3, 
@@ -44,7 +44,7 @@ class Trousers(Apparel):
 
 class Boots(Apparel):
     def __init__(self, name, pl_name, primary_slot='feet'):
-        Apparel.__init__(self, name, pl_name, primary_slot='feet')
+        Apparel.__init__(self, name, pl_name, itemsize=20, primary_slot='feet')
         self.primary_slot = primary_slot
         self.occupied_slots = {
             'ankles': 4, 'feet': 4
@@ -52,7 +52,7 @@ class Boots(Apparel):
 
 class Shoes(Apparel):
     def __init__(self, name, pl_name, primary_slot='feet'):
-        Apparel.__init__(self, name, pl_name, primary_slot='feet')
+        Apparel.__init__(self, name, pl_name, itemsize=10, primary_slot='feet')
         self.primary_slot = primary_slot
         self.occupied_slots = {
             'feet': 4
