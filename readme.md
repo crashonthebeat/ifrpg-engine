@@ -1,4 +1,4 @@
-# IFRPG-ENGINE v 0.2 - Hand Stuff
+# IFRPG-ENGINE v 0.2.5 - Hand Stuff with some interaction
 
 This is a text-adventure rpg engine written from scratch in python. I'm not intending this to be something for people to just use out of the box, since this will just be a creative outlet for me as well as a vessel to expand my knowledge of python, as well as git, so you'll hopefully see how I improve with commits and other things. 
 
@@ -45,6 +45,8 @@ I'm going to work on different parts of the game methodically. The reason for th
     * As I said above, different interactions will have different search scopes, which makes it important to add specific attributes to items. For example, adding an is_container attribute to an item in order to get a search method to search those containers, but also an is_open method so closed/locked chests cant be cheated through.
 * Equipment
     * Equipping and Unequipping items presents its own challenges, like how to deal with item slots in a way that makes sense but also fulfills my need to make things complicated. In the previous rewrite, I used slot amounts for specific parts of the body, ex. a jacket would take 1 slot on the upper arm but a shirt would only take up half since it's presumably thinner. This enabled different items to share the same body-space. Instead of this, I will keep body slots but use layers, so that two clothes/armors can share the same item space but not if they're the same layer. This will also let me do things like 'you can't put your undershirt on over your chestplate! take that off first.' If that gives you an idea of how complicated I want this engine to be, and you're not scared, you're my kinda people.
+* Encumberance
+    * Items should have weight and size. Since your main "inventory" is just your hands, items should reflect how much of that space they take up. 
 
 ### Stage 4 - Basic Puzzles and Quests
 Puzzles and Quests and the same thing: the player needs to do a certain number of things, possibly in a specific order, possibly in different locations, in order to satisfy a requirement. Once that is satisfied, something happens.
