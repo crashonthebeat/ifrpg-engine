@@ -81,7 +81,7 @@ class Door(Roomspace):
         self.entity_type = 'door'
         # This will be set in the inventory initialization with the key item.
 
-    def unlock_door(self, actor):
+    def unlock_door(self, actor, dire):
         if self.locked:
             found = False
             for key in self.keys:
@@ -94,3 +94,10 @@ class Door(Roomspace):
         else:
             print(f"{self.name.capitalize()} is already unlocked.")
             return False  # Stop method if already unlocked.
+
+        print(f"Would you like to open {self.name}?")
+        choice = input("(y/n)> ")
+        if choice.lower()[0] == 'y': actor.current_room.open(dire)
+        elif choice.lower()[0] == 'n': return True
+        else:
+            print(f"I didn't understand that, {self.name} is still closed.")
