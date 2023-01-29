@@ -1,20 +1,59 @@
 from entities.basic import Entity
+from entities.boxes import Box
 from entities.boxscope import localscope, scenescope, selfscope
 from src.text import proper, intr
 
-class Player(Entity):
+directions = [
+    "north", "east", "south", "west", "northeast", "northwest",
+    "southeast", "southwest", "up", "down"]
+
+class Player(Box):
     def __init__(self, name, current_room):
         Entity.__init__(self, name)
         self.name = name
         self.entity_type = 'player'
         self.current_room = current_room
+        self.list_desc = 'in your hands'
         self.worn_items = []  # A list of items
-        self.held_items = {}  # A dict of items - "inventory"
+        self.inventory = {}  # A dict of items - "inventory"
         # This game engine doesn't have a classic inventory where anything
         # you pick up goes into a pile above your head. You will have a 
         # limited space to put things based on weight and size. So, if
         # you pick something up it'll go into your hands if you have a
         # free hand.
+        self.open = True
+
+    def describe(self):
+        for line in self.desc: print(line)
+        if len(self.inventory) > 0:
+            print("You are currently holding:")
+            for line in self.list_items(): print(line)
+
+    def open_close(self, obj, action):
+        # This and the following method will check if the object is
+        # a direction or container, as well as what the player wants
+        # do do, and then passes it to the correct method.
+
+        #
+        # DOOR OPEN/CLOSE
+        if obj in directions and action == 'open':
+            # Opens a Direction
+            self.current_room.open(obj)
+        elif obj in directions and action == 'close':
+            # Closes a Direction
+            self.current_room.close(obj)
+        elif obj in directions and action == 'unlock':
+            # Locks a Direction
+           self.current_room.exits[obj].unlock_door()
+        #
+        # BOX OPEN/CLOSE
+        #
+        elif action == 'open':
+            box, parent = self.find_item(obj, localscope)
+            box.open_box()
+        elif action == 'close':
+            box, parent = self.find_item(obj, localscope)
+            box.close_box()
 
     #######################
     ### UTILITY METHODS ###
@@ -23,7 +62,7 @@ class Player(Entity):
     def find_box(self, search_box):
         # This method searches localscope for the user defined box and 
         # checks if the item can in fact be a box or not.
-        box, scope = localscope.search_scope(search_box)
+        box, parent = localscope.search_scope(search_box)
 
     def find_item(self, search_item, scope):
         item, box = scope.search_scope(search_item)
@@ -35,16 +74,13 @@ class Player(Entity):
             print(f"Which {search_item} do you mean?")
             return False, False
         elif box.name == self.current_room.name:
-            print(f"You pick up {item.name}.")
             return item, box
         elif box and not box.open:
             print(f"You don't see {search_item} here.")
             return False, False
         elif box and box.open:
-            print(f"You get {item.name} from {box.name}.")
             return item, box
         else:
-            print(f"You pick up {item.name}.")
             return item, box
 
     ######################
@@ -100,16 +136,6 @@ class Player(Entity):
         else: 
             print("There's no exit here.")
 
-    # The following three methods are user actions to interact with doors.
-    def open_door(self, dir):
-        self.current_room.open(dir)
-
-    def close_door(self, dir):
-        self.current_room.close(dir)
-
-    def unlock_door(self, dir):
-        self.current_room.exits[dir].unlock_door()
-
     ####################
     ### EYES METHODS ###
     ####################
@@ -121,6 +147,7 @@ class Player(Entity):
         if (not obj or obj == 'room'):
             # If no object is given, assume user wants to look at room.
             self.current_room.describe()
+            self.current_room.list_exits()
         elif obj in ['self', 'me', 'player', 'myself']:
             self.describe()
         else:
@@ -143,28 +170,59 @@ class Player(Entity):
     ### ITEM METHODS ###
     ####################
 
-    def add_item(self, item):
-        if item in self.held_items.keys():
-            self.held_items[item] += 1
-        else:
-            self.held_items[item] = 1
-        
-
     def get_item(self, search_item, search_box):
         # In this case, the ind_obj will be the box, and the obj itself
         # is the item they want to get.
 
-        if search_box:
-            # If the player specifies a box, search localscope for the
-            # box, and then search the box for the item.
-            # Box will need to be checked if it's open or not.
-            pass  # TODO Implement after get_item finished.
+        if search_box and search_box != 'room':
+            box, parent = self.find_item(search_box, localscope)
+            if not box: return True
+            else: item, box = self.find_item(search_item, box)
         else:
             # Otherwise, search localscope for the item and return the
             # item and box. 
             item, box = self.find_item(search_item, localscope)
-            if not item: return True
-            else:
-                box.remove_item(item)
-                self.add_item(item)
-                if item.isbox: localscope.update_scope(self)
+        if not item: return True
+        else:
+            box.remove_item(item)
+            self.add_item(item)
+            print(f"You get {item.name} from {box.name}.")
+            if item.isbox: localscope.update_scope(self)
+
+    def drop_item(self, search_item):
+        # This method only searches held items, as the player can't
+        # Directly drop something from a worn inventory. (May add)
+
+        found = 0
+        found_item = False
+
+        for item in self.held_items.keys():
+            if search_item in item.name and found == 0:
+                found += 1
+                found_item = item
+            elif search_item in item.name:
+                print(f"Which {search_item} do you want to drop?")
+                return True
+        
+        if found_item:
+            self.remove_item(found_item)
+            self.current_room.add_item(found_item)
+            print(f"You drop {found_item.name}")
+        else:
+            print(f"You can't find {search_item}")
+
+    def place_item(self, search_item, search_box, prep):
+        # This item is for placing an item directly into a user
+        # defined box.
+
+        # First check if the defined box exists in localscope
+        box, parent = self.find_item(search_box, localscope)
+        if not box: return True
+        # Now check if player has item in hands.
+        else: item, parent = self.find_item(search_item, self)
+        if not item: return True
+        else:
+            box.add_item(item)
+            self.remove_item(item)
+            print(f"You put {item.name} {prep} {box.name}.")
+
